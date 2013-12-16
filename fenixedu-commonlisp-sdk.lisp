@@ -98,7 +98,7 @@
 (defun get-person()
   (parse-json (api-private-request (api-person_endpoint *base-info*))))
 
-(defun get-classes-calendar(&key (format "json"))
+(defun get-calendar-classes(&key (format "json"))
   (let ((params nil))
     (setf params (list (cons "format" format)))
     (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
@@ -109,14 +109,14 @@
   (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
 						(api-curriculum_endpoint *base-info*) ))))
 
-(defun get-evaluations-calendar(&key (format "json"))
+(defun get-calendar-evaluations(&key (format "json"))
   (let ((params nil))
     (setf params (list (cons "format" format)))
     (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
 						  (api-calendar_endpoint *base-info*)  "/" 
 						  (api-evaluations_endpoint *base-info*)) :params params))))
 
-(defun get-courses (&key (sem nil) (year nil))
+(defun get-person-courses (&key (sem nil) (year nil))
   (let ((params nil))
     (if (not (null sem))
 	(push (cons "sem" sem) params))
@@ -125,11 +125,11 @@
     (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
 						  (api-courses_endpoint *base-info*)) :params params))))
 
-(defun get-evaluations ()
+(defun get-person-evaluations ()
   (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
 						(api-evaluations_endpoint *base-info*)))))
 
-(defun get-payments ()
+(defun get-person-payments ()
   (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
 						(api-payments_endpoint *base-info*)))))
 
@@ -141,7 +141,7 @@
 						      (api-evaluations_endpoint *base-info*) "/" id) 
 					 :params params :method :put)))))
 	
-(defun get-evaluation (id)
+(defun get-person-evaluation (id)
   (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
 						(api-evaluations_endpoint *base-info*) "/" id))))
 

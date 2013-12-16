@@ -5,6 +5,7 @@
   (:use #:cl)
   (:export #:startup
 	   #:get-api-url
+	   ;; public endpoints
 	   #:get-about
 	   #:get-course
 	   #:get-course-evaluations
@@ -16,17 +17,20 @@
 	   #:get-degree-courses
 	   #:get-spaces
 	   #:get-space
+	   ;; private endpoints
 	   #:get-person
 	   #:get-person-curriculum
-	   #:get-classes-calendar
-	   #:get-evaluations-calendar
-	   #:get-courses
-	   #:get-evaluations
-	   #:get-payments
+	   #:get-person-courses
+	   #:get-person-evaluations
+	   #:get-person-payments
+	   #:get-person-evaluation
 	   #:enrol-in-evaluation
-	   #:get-evaluation
+	   #:get-calendar-classes
+	   #:get-calendar-evaluations
+	   ;; oauth methods
 	   #:refresh-access-token
 	   #:set-code
+	   ;; redirect URL
 	   #:get-authentication-url))
 
 
