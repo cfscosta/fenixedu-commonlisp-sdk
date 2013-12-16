@@ -7,15 +7,17 @@
   (base_url "" :type string)
   (api_endpoint "" :type string)
   (api_version "" :type string)
-  ;; API specific 
-  (oauth_endpoint  "oauth" :type string)
-  (access_token_endpoint  "access_token" :type string)
+  ;; Oauth information
   (access_token  "" :type string)
   (refresh_token  "" :type string)
-  (expires)
   (code "" :type string)
+  (expires)
   (error_key  "error" :type string)
   ;; API endpoints
+  ;; -- OAuth
+  (oauth_endpoint  "oauth" :type string :read-only t)
+  (access_token_endpoint  "access_token" :type string :read-only t)
+  ;; -- Information
   (person_endpoint  "person" :type string :read-only t)
   (about_endpoint  "about" :type string :read-only t)
   (courses_endpoint  "courses" :type string :read-only t)
@@ -33,13 +35,9 @@
 
 (defvar *base-info*)
 
-;;(setf app-config (py-configparser:make-config))
-;;(py-configparser:read-files app-config '("fenixedu-python-sdk/fenixedu.ini"))
-;;(py-configparser:get-option app-config "fenixedu" "client_secret")
-
-(defun base-start ()
+(defun base-start (ini-file)
   (setf *base-info* (make-app-configuration))
-  (get-config))
+  (get-config ini-file))
 
 ;; sets storage 
 (defmacro set-option (storage app-config section option)
@@ -53,15 +51,17 @@
 	     (setf ,storage (py-configparser:get-option ,app-config "DEFAULT" ,option))
 	   (py-configparser:configparser-error ()
 	     (progn 
-	       (error 'fenixedu-configuration-error :message (format nil "~A/~A" ,option ,section))
+	       (error 'fenixedu-configuration-error :message (format nil "No such section/option pair ~A/~A" ,section ,option))
 	       )))))))
 						     
 
 ;; make the setfs error handling macros so we know which parameter is causing the exception also checks the DEFAULT parameters
-(defun get-config ()
+(defun get-config (ini-file)
+  (if (null (probe-file ini-file))
+      (error 'fenixedu-configuration-error :message (format nil "No such configuration file ~A" ini-file)))
   (let ((app-config (py-configparser:make-config))
 	(section "fenixedu"))
-    (py-configparser:read-files app-config '("fenixedu.ini"))
+    (py-configparser:read-files app-config (list ini-file))
     (set-option (api-client_id *base-info*) app-config section "client_id")
     (set-option (api-redirect_uri *base-info*) app-config section "redirect_uri")
     (set-option (api-client_secret *base-info*) app-config section "client_secret")

@@ -6,8 +6,8 @@
 
 (defvar *json-parser* 'json-string)
 
-(defun startup ()
-  (base-start))
+(defun startup (&key (ini-file "fenixedu.ini"))
+  (base-start ini-file))
 
 ;; This macro allows us to set the appropriate options in drakma requests without setting them for the entire application
 (defmacro with-fenix-content-types (&body body)
@@ -169,7 +169,7 @@
 	(json-result nil))
     (format t "Refreshing access token")
     (setf params (list (cons "client_id" (api-client_id *base-info*)) 
-		       (cons "0client_secret" (api-client_secret *base-info*)) 
+		       (cons "client_secret" (api-client_secret *base-info*)) 
 		       (cons "refresh_token" (api-refresh_token *base-info*)) 
 		       (cons "grant_type"  "authorization_code") 
 		       (cons "redirect_uri" (api-redirect_uri *base-info*))  

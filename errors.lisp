@@ -34,8 +34,8 @@
 
 (define-condition fenixedu-configuration-error (fenixedu-error)
   ()
-  (:documentation "Error reading fenixedu.ini.")
+  (:documentation "Error reading config file/option")
   (:report (lambda (condition stream)
-	     (format stream "no such option/section combination: ~A~%" 
+	     (format stream "~A~%" 
 		     (message condition)))))
 
