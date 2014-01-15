@@ -12,7 +12,7 @@ The SDK has multiple dependencies:
 + py-configparser
 + Drakma
 
-They are all available through quicklisp so it is recommended that you load the SDK through quicklisp as it will install all unmet dependencies.
+They are all available through quicklisp so it is recommended that you load the SDK through it as it will install all unmet dependencies.
 
 Setup
 =====
@@ -29,7 +29,7 @@ Usage
 (ql:quickload :fenixedu-commonlisp-sdk)
 
 ;; make the initial setup:
-(cl-fenix:startup "path/to/fenixedu.ini") ;; or (cl-fenix:startup) if you are working in the same directory as the ini file.
+(cl-fenix:startup "path/to/fenixedu.ini") ;; or (cl-fenix:startup) if you are in the same directory as the ini file.
 
 ;; get the authentication url:
 (cl-fenix:get-authentication-url)
