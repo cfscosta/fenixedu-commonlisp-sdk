@@ -11,6 +11,13 @@
 		     (message condition))))
   (:documentation "unknown fenixedu error"))
 
+(define-condition fenixedu-application-error (fenixedu-error)
+  ()
+  (:report (lambda (condition stream)
+	     (format stream "Application Error: ~A~%" 
+		     (message condition))))
+  (:documentation "unknown application error"))
+
 (define-condition fenixedu-unknownhost-error (fenixedu-error)
   ()
   (:documentation "host not found error.")
@@ -38,4 +45,5 @@
   (:report (lambda (condition stream)
 	     (format stream "~A~%" 
 		     (message condition)))))
+
 

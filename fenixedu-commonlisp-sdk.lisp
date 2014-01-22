@@ -98,23 +98,9 @@
 (defun get-person()
   (parse-json (api-private-request (api-person_endpoint *base-info*))))
 
-(defun get-calendar-classes(&key (format "json"))
-  (let ((params nil))
-    (setf params (list (cons "format" format)))
-    (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
-						  (api-calendar_endpoint *base-info*) "/" 
-						  (api-classes_endpoint *base-info*)) :params params ))))
-
 (defun get-person-curriculum ()
   (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
 						(api-curriculum_endpoint *base-info*) ))))
-
-(defun get-calendar-evaluations(&key (format "json"))
-  (let ((params nil))
-    (setf params (list (cons "format" format)))
-    (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
-						  (api-calendar_endpoint *base-info*)  "/" 
-						  (api-evaluations_endpoint *base-info*)) :params params))))
 
 (defun get-person-courses (&key (sem nil) (year nil))
   (let ((params nil))
@@ -133,6 +119,10 @@
   (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
 						(api-payments_endpoint *base-info*)))))
 
+(defun get-person-evaluation (id)
+  (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
+						(api-evaluations_endpoint *base-info*) "/" id))))
+
 (defun enrol-in-evaluation(id &key (enrol-action nil))
   (let ((params nil))
     (if (not (null enrol-action))
@@ -140,10 +130,20 @@
 	(parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
 						      (api-evaluations_endpoint *base-info*) "/" id) 
 					 :params params :method :put)))))
-	
-(defun get-person-evaluation (id)
-  (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
-						(api-evaluations_endpoint *base-info*) "/" id))))
+
+(defun get-calendar-classes(&key (format "json"))
+  (let ((params nil))
+    (setf params (list (cons "format" format)))
+    (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
+						  (api-calendar_endpoint *base-info*) "/" 
+						  (api-classes_endpoint *base-info*)) :params params ))))
+
+(defun get-calendar-evaluations(&key (format "json"))
+  (let ((params nil))
+    (setf params (list (cons "format" format)))
+    (parse-json (api-private-request (concatenate 'string (api-person_endpoint *base-info*) "/" 
+						  (api-calendar_endpoint *base-info*)  "/" 
+						  (api-evaluations_endpoint *base-info*)) :params params))))
 
 (defun api-private-request (endpoint  &key (params nil)  (method :get) (headers nil))
     (let ((url (concatenate 'string (get-api-url) "/" endpoint))
@@ -151,9 +151,7 @@
 	  (json-result nil))
       (push (cons "access_token" (api-access_token *base-info*)) params )
       (setf result (api-request url :params params :method method :headers headers))
-      ;;(print result)
       (setf json-result (jsown:parse result))
-      ;;(print json-result)
       (cond ((not (null (get-response-info json-result "error")))
 	     (refresh-access-token)
 	     (setf result (api-request url :params params :method method :headers headers))))
@@ -177,6 +175,8 @@
     ;;(setf headers (list (cons "content-type" "application/x-www-form-urlencoded")))
     (setf result (api-request url :params params :method :post  :headers headers))
     (setf json-result (jsown:parse result))
+    (if (not (null (get-response-info json-result "error")))
+	(error 'fenixedu-application-error :message result ))	   
     (setf (api-access_token *base-info*) (get-response-info json-result "access_token"))
     (setf (api-expires *base-info*) (get-response-info json-result "expires_in"))))
 
@@ -199,8 +199,7 @@
     (setf result (api-request url :params params :method :post :headers headers))
     (setf json-result (jsown:parse result))
     (cond ((not (null (get-response-info json-result "error")))
-	   (format t "Error tryng to get an access token")
-	   (print result))
+	   (format t "Error tryng to get an access token"))
 	  (t
 	   (setf (api-access_token *base-info*) (get-response-info json-result "access_token"))
 	   (setf (api-refresh_token *base-info*) (get-response-info json-result "refresh_token"))
