@@ -12,7 +12,7 @@ The SDK has multiple dependencies:
 + py-configparser
 + Drakma
 
-They are all available through quicklisp so it is recommended that you load the SDK through it as it will install all unmet dependencies.
+They are all available through quicklisp so it is recommended that you load the SDK through it, as all unmet dependencies will be installed.
 
 Setup
 =====
