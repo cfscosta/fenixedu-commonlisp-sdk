@@ -1,48 +1,49 @@
-## FenixEdu SDK for Common Lisp
+fenixedu-commonlisp-sdk
+=======================
 
-### Requirements
+The Common Lisp SDK for the FenixEdu project.
 
-The common lisp SDK has several requirements. It is recommended that you use quicklisp to load the project as it will download and install them automatically.
+Requirements
+============
 
-+ Drakma
+The SDK has multiple dependencies:
+
++ jsown
 + py-configparser
-+ jsown    
++ Drakma
 
-### Instalation
+They are all available through quicklisp so it is recommended that you load the SDK through it as it will install all unmet dependencies.
 
-As it is recommended that you use quicklisp this is how you load the SDK with it:
+Setup
+=====
 
-First you download and setup quicklisp, if you haven't done it yet.
+Before you start using the SDK, you need to setup the ```fenixedu.ini``` file with your application's credentials. 
 
-Then you load the asd file `fenixedu-commonlisp-sdk.asd`.
+Just copy the sample provided in ```fenixedu.sample.ini``` to ```fenixedu.ini``` and fill it with your credentials.
 
-After this, you load the project through quicklisp: 
+Usage
+=====
 
-      (ql:quickload :fenixedu-commonlisp-sdk)
+```lisp
+;; Load the SDK
+(ql:quickload :fenixedu-commonlisp-sdk)
 
-This should fetch, install and load all the dependencies and the SDK as well.
+;; make the initial setup:
+(cl-fenix:startup "path/to/fenixedu.ini") ;; or (cl-fenix:startup) if you are in the same directory as the ini file.
 
-After loading the SDK and it's dependencies, you have to set your app details.
+;; get the authentication url:
+(cl-fenix:get-authentication-url)
 
-Copy file fenixedu.sample.ini to a new one called fenixedu.ini 
-     cp fenixedu.sample.ini fenixedu.ini
+;; redirect your users to that URL
+;; the users will be redirected to an url like: 
+;; redirect_uri?code=[code]
+;; get the code parameter and run 
+(cl-fenix:set-code [code])
 
-Move it to your project's root 
-     mv fenixedu.ini project_dir 
+;; if everything goes well you can test the API by making a private and a public call
+(cl-fenix:get-about) ;; public call
+(cl-fenix:get-person) ;; private call
+```
 
-Edit ```fenixedu.ini``` file according to your app info.
-
-### Usage
-
-After this is set, you can start the sdk.
-
-You can accomplish this by calling:
-    
-    (cl-fenix:startup)
-
-After this you can try the SDK by making a public call:
-      
-    (cl-fenix:get-about)
-
-which should return you the information about the institution.
+All the calls will return a json string so you are free to use your favourite json parser.
 
